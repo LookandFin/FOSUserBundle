@@ -42,9 +42,9 @@ if (interface_exists(PasswordAuthenticatedUserInterface::class)) {
  */
 interface UserInterface extends CompatUserInterface
 {
-    public const ROLE_DEFAULT = 'ROLE_USER';
+    //public const ROLE_DEFAULT = 'ROLE_USER';
 
-    public const ROLE_SUPER_ADMIN = 'ROLE_SUPER_ADMIN';
+    //public const ROLE_SUPER_ADMIN = 'ROLE_SUPER_ADMIN';
 
     /**
      * Returns the user unique id.
@@ -65,7 +65,7 @@ interface UserInterface extends CompatUserInterface
      *
      * @return static
      */
-    public function setUsername($username);
+    public function setUsername(?string $username);
 
     /**
      * Gets the canonical username in search and sort queries.
@@ -81,7 +81,7 @@ interface UserInterface extends CompatUserInterface
      *
      * @return static
      */
-    public function setUsernameCanonical($usernameCanonical);
+    public function setUsernameCanonical(?string $usernameCanonical);
 
     /**
      * @param string|null $salt
@@ -104,7 +104,7 @@ interface UserInterface extends CompatUserInterface
      *
      * @return static
      */
-    public function setEmail($email);
+    public function setEmail(?string $email);
 
     /**
      * Gets the canonical email in search and sort queries.
@@ -120,7 +120,7 @@ interface UserInterface extends CompatUserInterface
      *
      * @return static
      */
-    public function setEmailCanonical($emailCanonical);
+    public function setEmailCanonical(?string $emailCanonical);
 
     /**
      * Gets the plain password.
@@ -136,7 +136,7 @@ interface UserInterface extends CompatUserInterface
      *
      * @return static
      */
-    public function setPlainPassword($password);
+    public function setPlainPassword(?string $password);
 
     /**
      * Sets the hashed password.
@@ -145,7 +145,7 @@ interface UserInterface extends CompatUserInterface
      *
      * @return static
      */
-    public function setPassword($password);
+    public function setPassword(?string $password);
 
     /**
      * Tells if the the given user has the super admin role.
@@ -159,7 +159,7 @@ interface UserInterface extends CompatUserInterface
      *
      * @return static
      */
-    public function setEnabled($boolean);
+    public function setEnabled(bool $boolean);
 
     /**
      * Sets the super admin status.
@@ -168,7 +168,7 @@ interface UserInterface extends CompatUserInterface
      *
      * @return static
      */
-    public function setSuperAdmin($boolean);
+    public function setSuperAdmin(bool $boolean);
 
     /**
      * Gets the confirmation token.
@@ -184,7 +184,7 @@ interface UserInterface extends CompatUserInterface
      *
      * @return static
      */
-    public function setConfirmationToken($confirmationToken);
+    public function setConfirmationToken(?string $confirmationToken);
 
     /**
      * Sets the timestamp that the user requested a password reset.
@@ -200,7 +200,7 @@ interface UserInterface extends CompatUserInterface
      *
      * @return bool
      */
-    public function isPasswordRequestNonExpired($ttl);
+    public function isPasswordRequestNonExpired(int $ttl);
 
     /**
      * Sets the last login time.
@@ -221,7 +221,7 @@ interface UserInterface extends CompatUserInterface
      *
      * @return bool
      */
-    public function hasRole($role);
+    public function hasRole(string $role);
 
     /**
      * Sets the roles of the user.
@@ -239,7 +239,7 @@ interface UserInterface extends CompatUserInterface
      *
      * @return static
      */
-    public function addRole($role);
+    public function addRole(string $role): void;
 
     /**
      * Removes a role to the user.
@@ -248,7 +248,7 @@ interface UserInterface extends CompatUserInterface
      *
      * @return static
      */
-    public function removeRole($role);
+    public function removeRole(string $role);
 
     /**
      * Checks whether the user is enabled.
