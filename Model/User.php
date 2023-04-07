@@ -169,18 +169,18 @@ abstract class User implements UserInterface, EquatableInterface, \Serializable
     /**
      * {@inheritdoc}
      */
-    public function addRole($role)
+    public function addRole(string $role): void
     {
         $role = strtoupper($role);
-        if ($role === static::ROLE_DEFAULT) {
-            return $this;
+        if ($role === 'ROLE_USER') {
+            return;
         }
 
         if (!in_array($role, $this->roles, true)) {
             $this->roles[] = $role;
         }
 
-        return $this;
+        return;
     }
 
     /**
@@ -288,7 +288,7 @@ abstract class User implements UserInterface, EquatableInterface, \Serializable
         $roles = $this->roles;
 
         // we need to make sure to have at least one role
-        $roles[] = static::ROLE_DEFAULT;
+        $roles[] = 'ROLE_DEFAULT';
 
         return array_values(array_unique($roles));
     }
@@ -311,7 +311,7 @@ abstract class User implements UserInterface, EquatableInterface, \Serializable
      */
     public function isSuperAdmin()
     {
-        return $this->hasRole(static::ROLE_SUPER_ADMIN);
+        return $this->hasRole('ROLE_SUPER_ADMIN');
     }
 
     /**
@@ -403,9 +403,9 @@ abstract class User implements UserInterface, EquatableInterface, \Serializable
     public function setSuperAdmin($boolean)
     {
         if (true === $boolean) {
-            $this->addRole(static::ROLE_SUPER_ADMIN);
+            $this->addRole('ROLE_SUPER_ADMIN');
         } else {
-            $this->removeRole(static::ROLE_SUPER_ADMIN);
+            $this->removeRole('ROLE_SUPER_ADMIN');
         }
 
         return $this;
