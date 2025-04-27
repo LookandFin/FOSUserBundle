@@ -186,7 +186,7 @@ abstract class User implements UserInterface, EquatableInterface, \Serializable
     /**
      * {@inheritdoc}
      */
-    public function eraseCredentials(): void
+    public function eraseCredentials()
     {
         $this->plainPassword = null;
     }
