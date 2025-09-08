@@ -73,7 +73,7 @@ class LoginManagerTest extends TestCase
     /**
      * @param RememberMeHandlerInterface|RememberMeServicesInterface|null $rememberMeHandler
      */
-    private function createLoginManager(string $firewallName, $rememberMeHandler = null): LoginManager
+    private function createLoginManager(string $firewallName, ?$rememberMeHandler = null): LoginManager
     {
         $tokenStorage = $this->getMockBuilder(TokenStorageInterface::class)->getMock();
         $tokenStorage

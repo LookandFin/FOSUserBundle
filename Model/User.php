@@ -424,7 +424,7 @@ abstract class User implements UserInterface, EquatableInterface, \Serializable
     /**
      * {@inheritdoc}
      */
-    public function setLastLogin(\DateTime $time = null)
+    public function setLastLogin(?\DateTime $time = null)
     {
         $this->lastLogin = $time;
 
@@ -444,7 +444,7 @@ abstract class User implements UserInterface, EquatableInterface, \Serializable
     /**
      * {@inheritdoc}
      */
-    public function setPasswordRequestedAt(\DateTime $date = null)
+    public function setPasswordRequestedAt(?\DateTime $date = null)
     {
         $this->passwordRequestedAt = $date;
 
