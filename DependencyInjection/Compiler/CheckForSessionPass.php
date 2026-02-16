@@ -29,7 +29,7 @@ class CheckForSessionPass implements CompilerPassInterface
     /**
      * {@inheritdoc}
      */
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
         if ($container->hasParameter('fos_user.session_needed') && !$container->has('session.storage.factory') && !$container->has('session')) {
             $message = 'FOSUserBundle requires the "session" to be available for the enabled features.';
