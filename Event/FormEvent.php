@@ -16,10 +16,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\EventDispatcher\Event;
 
-/**
- * @final
- */
-class FormEvent extends Event
+final class FormEvent extends Event
 {
     /**
      * @var FormInterface
@@ -55,7 +52,7 @@ class FormEvent extends Event
         return $this->request;
     }
 
-    public function setResponse(Response $response)
+    public function setResponse(Response $response): void
     {
         $this->response = $response;
     }

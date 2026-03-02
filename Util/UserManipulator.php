@@ -11,7 +11,6 @@
 
 namespace FOS\UserBundle\Util;
 
-use FOS\UserBundle\CompatibilityUtil;
 use FOS\UserBundle\Event\UserEvent;
 use FOS\UserBundle\FOSUserEvents;
 use FOS\UserBundle\Model\UserInterface;
@@ -55,7 +54,7 @@ class UserManipulator
     public function __construct(UserManagerInterface $userManager, EventDispatcherInterface $dispatcher, RequestStack $requestStack)
     {
         $this->userManager = $userManager;
-        $this->dispatcher = CompatibilityUtil::upgradeEventDispatcher($dispatcher);
+        $this->dispatcher = $dispatcher;
         $this->requestStack = $requestStack;
     }
 
@@ -89,7 +88,7 @@ class UserManipulator
      *
      * @param string $username
      */
-    public function activate($username)
+    public function activate($username): void
     {
         $user = $this->findUserByUsernameOrThrowException($username);
         $user->setEnabled(true);
@@ -104,7 +103,7 @@ class UserManipulator
      *
      * @param string $username
      */
-    public function deactivate($username)
+    public function deactivate($username): void
     {
         $user = $this->findUserByUsernameOrThrowException($username);
         $user->setEnabled(false);
@@ -120,7 +119,7 @@ class UserManipulator
      * @param string $username
      * @param string $password
      */
-    public function changePassword($username, $password)
+    public function changePassword($username, $password): void
     {
         $user = $this->findUserByUsernameOrThrowException($username);
         $user->setPlainPassword($password);
@@ -135,7 +134,7 @@ class UserManipulator
      *
      * @param string $username
      */
-    public function promote($username)
+    public function promote($username): void
     {
         $user = $this->findUserByUsernameOrThrowException($username);
         $user->setSuperAdmin(true);
@@ -150,7 +149,7 @@ class UserManipulator
      *
      * @param string $username
      */
-    public function demote($username)
+    public function demote($username): void
     {
         $user = $this->findUserByUsernameOrThrowException($username);
         $user->setSuperAdmin(false);

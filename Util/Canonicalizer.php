@@ -13,10 +13,7 @@ namespace FOS\UserBundle\Util;
 
 class Canonicalizer implements CanonicalizerInterface
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function canonicalize($string)
+    public function canonicalize($string): ?string
     {
         if (null === $string) {
             return null;

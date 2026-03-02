@@ -20,14 +20,9 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
  * @author Christophe Coevoet <stof@notk.org>
  *
  * @internal
- *
- * @final
  */
-class ValidationPass implements CompilerPassInterface
+final class ValidationPass implements CompilerPassInterface
 {
-    /**
-     * {@inheritdoc}
-     */
     public function process(ContainerBuilder $container): void
     {
         if (!$container->hasParameter('fos_user.storage')) {
@@ -35,14 +30,15 @@ class ValidationPass implements CompilerPassInterface
         }
 
         $storage = $container->getParameter('fos_user.storage');
+        \assert(\is_string($storage));
 
         if ('custom' === $storage) {
             return;
         }
 
-        $validationFile = __DIR__.'/../../Resources/config/storage-validation/'.$storage.'.xml';
+        $validationFile = __DIR__.'/../../Resources/config/storage-validation/'.$storage.'.yaml';
 
         $container->getDefinition('validator.builder')
-            ->addMethodCall('addXmlMapping', [$validationFile]);
+            ->addMethodCall('addYamlMapping', [$validationFile]);
     }
 }

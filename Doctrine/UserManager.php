@@ -43,19 +43,16 @@ class UserManager extends BaseUserManager
         $this->class = $class;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function deleteUser(UserInterface $user)
+    public function deleteUser(UserInterface $user): void
     {
         $this->objectManager->remove($user);
         $this->objectManager->flush();
     }
 
     /**
-     * {@inheritdoc}
+     * @phpstan-return class-string<UserInterface>
      */
-    public function getClass()
+    public function getClass(): string
     {
         if (false !== strpos($this->class, ':')) {
             $metadata = $this->objectManager->getClassMetadata($this->class);
@@ -65,34 +62,25 @@ class UserManager extends BaseUserManager
         return $this->class;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function findUserBy(array $criteria)
+    public function findUserBy(array $criteria): ?UserInterface
     {
         return $this->getRepository()->findOneBy($criteria);
     }
 
     /**
-     * {@inheritdoc}
+     * @return iterable<UserInterface>
      */
-    public function findUsers()
+    public function findUsers(): iterable
     {
         return $this->getRepository()->findAll();
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function reloadUser(UserInterface $user)
+    public function reloadUser(UserInterface $user): void
     {
         $this->objectManager->refresh($user);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function updateUser(UserInterface $user, $andFlush = true)
+    public function updateUser(UserInterface $user, $andFlush = true): void
     {
         $this->updateCanonicalFields($user);
         $this->updatePassword($user);
@@ -104,9 +92,9 @@ class UserManager extends BaseUserManager
     }
 
     /**
-     * @return ObjectRepository
+     * @return ObjectRepository<UserInterface>
      */
-    protected function getRepository()
+    protected function getRepository(): ObjectRepository
     {
         return $this->objectManager->getRepository($this->getClass());
     }

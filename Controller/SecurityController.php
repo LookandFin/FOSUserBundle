@@ -21,15 +21,13 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
  *
  * @author Thibault Duplessis <thibault.duplessis@gmail.com>
  * @author Christophe Coevoet <stof@notk.org>
- *
- * @final
  */
-class SecurityController extends AbstractController
+final class SecurityController extends AbstractController
 {
     private $authenticationUtils;
     private $tokenManager;
 
-    public function __construct(AuthenticationUtils $authenticationUtils, CsrfTokenManagerInterface $tokenManager = null)
+    public function __construct(AuthenticationUtils $authenticationUtils, ?CsrfTokenManagerInterface $tokenManager = null)
     {
         $this->authenticationUtils = $authenticationUtils;
         $this->tokenManager = $tokenManager;
@@ -51,12 +49,12 @@ class SecurityController extends AbstractController
         ]);
     }
 
-    public function checkAction()
+    public function checkAction(): never
     {
         throw new \RuntimeException('You must configure the check path to be handled by the firewall using form_login in your security firewall configuration.');
     }
 
-    public function logoutAction()
+    public function logoutAction(): never
     {
         throw new \RuntimeException('You must activate the logout in your security firewall configuration.');
     }
@@ -64,6 +62,8 @@ class SecurityController extends AbstractController
     /**
      * Renders the login template with the given parameters. Overwrite this function in
      * an extended controller to provide additional data for the login template.
+     *
+     * @param array<string, mixed> $data
      */
     protected function renderLogin(array $data): Response
     {

@@ -22,26 +22,15 @@ use Symfony\Component\Console\Output\OutputInterface;
  * @author Lenar Lõhmus <lenar@city.ee>
  *
  * @internal
- *
- * @final
  */
 #[AsCommand(name: 'fos:user:promote', description: 'Promotes a user by adding a role')]
-class PromoteUserCommand extends RoleCommand
+final class PromoteUserCommand extends RoleCommand
 {
-    // BC with Symfony <5.3
-    protected static $defaultName = 'fos:user:promote';
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function configure()
+    protected function configure(): void
     {
         parent::configure();
 
         $this
-            // BC with Symfony <5.3
-            ->setName('fos:user:promote')
-            ->setDescription('Promotes a user by adding a role')
             ->setHelp(<<<'EOT'
 The <info>fos:user:promote</info> command promotes a user by adding a role
 
@@ -51,10 +40,7 @@ EOT
             );
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function executeRoleCommand(UserManipulator $manipulator, OutputInterface $output, $username, $super, $role)
+    protected function executeRoleCommand(UserManipulator $manipulator, OutputInterface $output, $username, $super, $role): void
     {
         if ($super) {
             $manipulator->promote($username);

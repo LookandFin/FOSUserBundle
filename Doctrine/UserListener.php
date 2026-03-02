@@ -27,10 +27,8 @@ use FOS\UserBundle\Util\PasswordUpdaterInterface;
  * @author David Buchmann <mail@davidbu.ch>
  *
  * @internal
- *
- * @final
  */
-class UserListener implements EventSubscriber
+final class UserListener implements EventSubscriber
 {
     private $passwordUpdater;
     private $canonicalFieldsUpdater;
@@ -41,9 +39,6 @@ class UserListener implements EventSubscriber
         $this->canonicalFieldsUpdater = $canonicalFieldsUpdater;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getSubscribedEvents(): array
     {
         return [
@@ -54,8 +49,10 @@ class UserListener implements EventSubscriber
 
     /**
      * Pre persist listener based on doctrine common.
+     *
+     * @param LifecycleEventArgs<ObjectManager> $args
      */
-    public function prePersist(LifecycleEventArgs $args)
+    public function prePersist(LifecycleEventArgs $args): void
     {
         $object = $args->getObject();
         if ($object instanceof UserInterface) {
@@ -65,8 +62,10 @@ class UserListener implements EventSubscriber
 
     /**
      * Pre update listener based on doctrine common.
+     *
+     * @param LifecycleEventArgs<ObjectManager> $args
      */
-    public function preUpdate(LifecycleEventArgs $args)
+    public function preUpdate(LifecycleEventArgs $args): void
     {
         $object = $args->getObject();
         if ($object instanceof UserInterface) {
@@ -78,7 +77,7 @@ class UserListener implements EventSubscriber
     /**
      * Updates the user properties.
      */
-    private function updateUserFields(UserInterface $user)
+    private function updateUserFields(UserInterface $user): void
     {
         $this->canonicalFieldsUpdater->updateCanonicalFields($user);
         $this->passwordUpdater->hashPassword($user);
@@ -87,17 +86,17 @@ class UserListener implements EventSubscriber
     /**
      * Recomputes change set for Doctrine implementations not doing it automatically after the event.
      */
-    private function recomputeChangeSet(ObjectManager $om, UserInterface $user)
+    private function recomputeChangeSet(ObjectManager $om, UserInterface $user): void
     {
-        $meta = $om->getClassMetadata(get_class($user));
-
         if ($om instanceof EntityManager) {
+            $meta = $om->getClassMetadata(get_class($user));
             $om->getUnitOfWork()->recomputeSingleEntityChangeSet($meta, $user);
 
             return;
         }
 
         if ($om instanceof DocumentManager) {
+            $meta = $om->getClassMetadata(get_class($user));
             $om->getUnitOfWork()->recomputeSingleDocumentChangeSet($meta, $user);
         }
     }

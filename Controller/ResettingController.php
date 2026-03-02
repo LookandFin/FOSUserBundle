@@ -11,7 +11,6 @@
 
 namespace FOS\UserBundle\Controller;
 
-use FOS\UserBundle\CompatibilityUtil;
 use FOS\UserBundle\Event\FilterUserResponseEvent;
 use FOS\UserBundle\Event\FormEvent;
 use FOS\UserBundle\Event\GetResponseNullableUserEvent;
@@ -32,10 +31,8 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
  *
  * @author Thibault Duplessis <thibault.duplessis@gmail.com>
  * @author Christophe Coevoet <stof@notk.org>
- *
- * @final
  */
-class ResettingController extends AbstractController
+final class ResettingController extends AbstractController
 {
     private $eventDispatcher;
     private $formFactory;
@@ -53,7 +50,7 @@ class ResettingController extends AbstractController
      */
     public function __construct(EventDispatcherInterface $eventDispatcher, FactoryInterface $formFactory, UserManagerInterface $userManager, TokenGeneratorInterface $tokenGenerator, MailerInterface $mailer, $retryTtl)
     {
-        $this->eventDispatcher = CompatibilityUtil::upgradeEventDispatcher($eventDispatcher);
+        $this->eventDispatcher = $eventDispatcher;
         $this->formFactory = $formFactory;
         $this->userManager = $userManager;
         $this->tokenGenerator = $tokenGenerator;

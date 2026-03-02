@@ -21,12 +21,13 @@ use Symfony\Component\Security\Http\SecurityEvents;
 
 /**
  * @internal
- *
- * @final
  */
-class LastLoginListener implements EventSubscriberInterface
+final class LastLoginListener implements EventSubscriberInterface
 {
-    protected $userManager;
+    /**
+     * @var UserManagerInterface
+     */
+    private $userManager;
 
     /**
      * LastLoginListener constructor.
@@ -44,7 +45,7 @@ class LastLoginListener implements EventSubscriberInterface
         ];
     }
 
-    public function onImplicitLogin(UserEvent $event)
+    public function onImplicitLogin(UserEvent $event): void
     {
         $user = $event->getUser();
 
@@ -52,7 +53,7 @@ class LastLoginListener implements EventSubscriberInterface
         $this->userManager->updateUser($user);
     }
 
-    public function onSecurityInteractiveLogin(InteractiveLoginEvent $event)
+    public function onSecurityInteractiveLogin(InteractiveLoginEvent $event): void
     {
         $user = $event->getAuthenticationToken()->getUser();
 

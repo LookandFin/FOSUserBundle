@@ -20,10 +20,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * @internal
- *
- * @final
  */
-class FlashListener implements EventSubscriberInterface
+final class FlashListener implements EventSubscriberInterface
 {
     /**
      * @var string[]
@@ -54,9 +52,6 @@ class FlashListener implements EventSubscriberInterface
         $this->requestStack = $requestStack;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public static function getSubscribedEvents(): array
     {
         return [
@@ -70,7 +65,7 @@ class FlashListener implements EventSubscriberInterface
     /**
      * @param string $eventName
      */
-    public function addSuccessFlash(Event $event, $eventName)
+    public function addSuccessFlash(Event $event, $eventName): void
     {
         if (!isset(self::$successMessages[$eventName])) {
             throw new \InvalidArgumentException('This event does not correspond to a known flash message');
@@ -93,8 +88,8 @@ class FlashListener implements EventSubscriberInterface
     /**
      * @param string $message
      */
-    private function trans($message, array $params = []): string
+    private function trans($message): string
     {
-        return $this->translator->trans($message, $params, 'FOSUserBundle');
+        return $this->translator->trans($message, [], 'FOSUserBundle');
     }
 }

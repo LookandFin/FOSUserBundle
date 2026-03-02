@@ -11,7 +11,6 @@
 
 namespace FOS\UserBundle\EventListener;
 
-use FOS\UserBundle\CompatibilityUtil;
 use FOS\UserBundle\Event\FilterUserResponseEvent;
 use FOS\UserBundle\Event\UserEvent;
 use FOS\UserBundle\FOSUserEvents;
@@ -22,10 +21,8 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 /**
  * @internal
- *
- * @final
  */
-class AuthenticationListener implements EventSubscriberInterface
+final class AuthenticationListener implements EventSubscriberInterface
 {
     /**
      * @var LoginManagerInterface
@@ -48,9 +45,6 @@ class AuthenticationListener implements EventSubscriberInterface
         $this->firewallName = $firewallName;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public static function getSubscribedEvents(): array
     {
         return [
@@ -63,9 +57,8 @@ class AuthenticationListener implements EventSubscriberInterface
     /**
      * @param string $eventName
      */
-    public function authenticate(FilterUserResponseEvent $event, $eventName, EventDispatcherInterface $eventDispatcher)
+    public function authenticate(FilterUserResponseEvent $event, $eventName, EventDispatcherInterface $eventDispatcher): void
     {
-        $eventDispatcher = CompatibilityUtil::upgradeEventDispatcher($eventDispatcher);
         try {
             $this->loginManager->logInUser($this->firewallName, $event->getUser(), $event->getResponse());
 

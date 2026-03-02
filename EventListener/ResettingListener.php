@@ -20,10 +20,8 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * @internal
- *
- * @final
  */
-class ResettingListener implements EventSubscriberInterface
+final class ResettingListener implements EventSubscriberInterface
 {
     /**
      * @var UrlGeneratorInterface
@@ -46,9 +44,6 @@ class ResettingListener implements EventSubscriberInterface
         $this->tokenTtl = $tokenTtl;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public static function getSubscribedEvents(): array
     {
         return [
@@ -57,16 +52,16 @@ class ResettingListener implements EventSubscriberInterface
         ];
     }
 
-    public function onResettingResetInitialize(GetResponseUserEvent $event)
+    public function onResettingResetInitialize(GetResponseUserEvent $event): void
     {
         if (!$event->getUser()->isPasswordRequestNonExpired($this->tokenTtl)) {
             $event->setResponse(new RedirectResponse($this->router->generate('fos_user_resetting_request')));
         }
     }
 
-    public function onResettingResetSuccess(FormEvent $event)
+    public function onResettingResetSuccess(FormEvent $event): void
     {
-        /** @var $user \FOS\UserBundle\Model\UserInterface */
+        /** @var \FOS\UserBundle\Model\UserInterface $user */
         $user = $event->getForm()->getData();
 
         $user->setConfirmationToken(null);

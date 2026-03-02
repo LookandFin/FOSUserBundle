@@ -19,10 +19,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Security\Core\Validator\Constraints\UserPassword;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
-/**
- * @final
- */
-class ProfileFormType extends AbstractType
+final class ProfileFormType extends AbstractType
 {
     /**
      * @var string
@@ -37,19 +34,14 @@ class ProfileFormType extends AbstractType
         $this->class = $class;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $this->buildUserForm($builder, $options);
 
-        $constraintsOptions = [
-            'message' => 'fos_user.current_password.invalid',
-        ];
+        $groups = null;
 
         if (!empty($options['validation_groups'])) {
-            $constraintsOptions['groups'] = [reset($options['validation_groups'])];
+            $groups = [reset($options['validation_groups'])];
         }
 
         $builder->add('current_password', PasswordType::class, [
@@ -58,7 +50,7 @@ class ProfileFormType extends AbstractType
             'mapped' => false,
             'constraints' => [
                 new NotBlank(),
-                new UserPassword($constraintsOptions),
+                new UserPassword(message: 'fos_user.current_password.invalid', groups: $groups),
             ],
             'attr' => [
                 'autocomplete' => 'current-password',
@@ -66,10 +58,7 @@ class ProfileFormType extends AbstractType
         ]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => $this->class,
@@ -77,9 +66,6 @@ class ProfileFormType extends AbstractType
         ]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getBlockPrefix(): string
     {
         return 'fos_user_profile';
@@ -87,8 +73,10 @@ class ProfileFormType extends AbstractType
 
     /**
      * Builds the embedded form representing the user.
+     *
+     * @param array<string, mixed> $options
      */
-    protected function buildUserForm(FormBuilderInterface $builder, array $options)
+    protected function buildUserForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('username', null, ['label' => 'form.username', 'translation_domain' => 'FOSUserBundle'])

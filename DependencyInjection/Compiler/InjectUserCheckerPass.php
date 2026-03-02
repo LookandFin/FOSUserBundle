@@ -21,17 +21,13 @@ use Symfony\Component\DependencyInjection\Reference;
  * @author Gocha Ossinkine <ossinkine@ya.ru>
  *
  * @internal
- *
- * @final
  */
-class InjectUserCheckerPass implements CompilerPassInterface
+final class InjectUserCheckerPass implements CompilerPassInterface
 {
-    /**
-     * {@inheritdoc}
-     */
     public function process(ContainerBuilder $container): void
     {
         $firewallName = $container->getParameter('fos_user.firewall_name');
+        \assert(\is_string($firewallName));
         $loginManager = $container->findDefinition('fos_user.security.login_manager');
 
         if ($container->has('security.user_checker.'.$firewallName)) {

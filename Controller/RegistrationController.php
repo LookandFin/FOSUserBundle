@@ -11,7 +11,6 @@
 
 namespace FOS\UserBundle\Controller;
 
-use FOS\UserBundle\CompatibilityUtil;
 use FOS\UserBundle\Event\FilterUserResponseEvent;
 use FOS\UserBundle\Event\FormEvent;
 use FOS\UserBundle\Event\GetResponseUserEvent;
@@ -33,10 +32,8 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
  *
  * @author Thibault Duplessis <thibault.duplessis@gmail.com>
  * @author Christophe Coevoet <stof@notk.org>
- *
- * @final
  */
-class RegistrationController extends AbstractController
+final class RegistrationController extends AbstractController
 {
     private $eventDispatcher;
     private $formFactory;
@@ -45,7 +42,7 @@ class RegistrationController extends AbstractController
 
     public function __construct(EventDispatcherInterface $eventDispatcher, FactoryInterface $formFactory, UserManagerInterface $userManager, TokenStorageInterface $tokenStorage)
     {
-        $this->eventDispatcher = CompatibilityUtil::upgradeEventDispatcher($eventDispatcher);
+        $this->eventDispatcher = $eventDispatcher;
         $this->formFactory = $formFactory;
         $this->userManager = $userManager;
         $this->tokenStorage = $tokenStorage;
@@ -172,7 +169,19 @@ class RegistrationController extends AbstractController
 
     private function getTargetUrlFromSession(SessionInterface $session): ?string
     {
-        $key = sprintf('_security.%s.target_path', $this->tokenStorage->getToken()->getProviderKey());
+        $token = $this->tokenStorage->getToken();
+
+        if (null === $token) {
+            return null;
+        }
+
+        if (method_exists($token, 'getFirewallName')) {
+            $firewallName = $token->getFirewallName();
+        } else {
+            return null;
+        }
+
+        $key = sprintf('_security.%s.target_path', $firewallName);
 
         if ($session->has($key)) {
             return $session->get($key);

@@ -55,7 +55,7 @@ abstract class User implements UserInterface, EquatableInterface, \Serializable
     /**
      * The salt to use for hashing.
      *
-     * @var string
+     * @var string|null
      */
     protected $salt;
 
@@ -91,7 +91,7 @@ abstract class User implements UserInterface, EquatableInterface, \Serializable
     protected $passwordRequestedAt;
 
     /**
-     * @var array
+     * @var string[]
      */
     protected $roles;
 
@@ -126,6 +126,9 @@ abstract class User implements UserInterface, EquatableInterface, \Serializable
         ];
     }
 
+    /**
+     * @param list<mixed> $data
+     */
     public function __unserialize(array $data): void
     {
         if (13 === count($data)) {
@@ -138,7 +141,7 @@ abstract class User implements UserInterface, EquatableInterface, \Serializable
             $data = array_values($data);
         }
 
-        list(
+        [
             $this->password,
             $this->salt,
             $this->usernameCanonical,
@@ -146,8 +149,8 @@ abstract class User implements UserInterface, EquatableInterface, \Serializable
             $this->enabled,
             $this->id,
             $this->email,
-            $this->emailCanonical
-        ) = $data;
+            $this->emailCanonical,
+        ] = $data;
     }
 
     /**
@@ -166,34 +169,26 @@ abstract class User implements UserInterface, EquatableInterface, \Serializable
         $this->__unserialize(unserialize($serialized));
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function addRole(string $role): void
+    public function addRole($role)
     {
         $role = strtoupper($role);
-        if ($role === 'ROLE_USER') {
-            return;
+        if ($role === static::ROLE_DEFAULT) {
+            return $this;
         }
 
         if (!in_array($role, $this->roles, true)) {
             $this->roles[] = $role;
         }
 
-        return;
+        return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    #[\Deprecated]
     public function eraseCredentials(): void
     {
         $this->plainPassword = null;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getId()
     {
         return $this->id;
@@ -205,8 +200,6 @@ abstract class User implements UserInterface, EquatableInterface, \Serializable
     }
 
     /**
-     * {@inheritdoc}
-     *
      * @return string
      */
     public function getUsername()
@@ -214,49 +207,31 @@ abstract class User implements UserInterface, EquatableInterface, \Serializable
         return $this->username;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getUsernameCanonical()
     {
         return $this->usernameCanonical;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getSalt(): ?string
     {
         return $this->salt;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getEmail()
     {
         return $this->email;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getEmailCanonical()
     {
         return $this->emailCanonical;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getPassword(): ?string
     {
         return $this->password;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getPlainPassword()
     {
         return $this->plainPassword;
@@ -272,30 +247,21 @@ abstract class User implements UserInterface, EquatableInterface, \Serializable
         return $this->lastLogin;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getConfirmationToken()
     {
         return $this->confirmationToken;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getRoles(): array
     {
         $roles = $this->roles;
 
         // we need to make sure to have at least one role
-        $roles[] = 'ROLE_DEFAULT';
+        $roles[] = static::ROLE_DEFAULT;
 
         return array_values(array_unique($roles));
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function hasRole($role)
     {
         return in_array(strtoupper($role), $this->getRoles(), true);
@@ -306,17 +272,11 @@ abstract class User implements UserInterface, EquatableInterface, \Serializable
         return $this->enabled;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function isSuperAdmin()
     {
-        return $this->hasRole('ROLE_SUPER_ADMIN');
+        return $this->hasRole(static::ROLE_SUPER_ADMIN);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function removeRole($role)
     {
         if (false !== $key = array_search(strtoupper($role), $this->roles, true)) {
@@ -327,9 +287,6 @@ abstract class User implements UserInterface, EquatableInterface, \Serializable
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setUsername($username)
     {
         $this->username = $username;
@@ -337,9 +294,6 @@ abstract class User implements UserInterface, EquatableInterface, \Serializable
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setUsernameCanonical($usernameCanonical)
     {
         $this->usernameCanonical = $usernameCanonical;
@@ -347,9 +301,6 @@ abstract class User implements UserInterface, EquatableInterface, \Serializable
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setSalt($salt)
     {
         $this->salt = $salt;
@@ -357,9 +308,6 @@ abstract class User implements UserInterface, EquatableInterface, \Serializable
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setEmail($email)
     {
         $this->email = $email;
@@ -367,9 +315,6 @@ abstract class User implements UserInterface, EquatableInterface, \Serializable
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setEmailCanonical($emailCanonical)
     {
         $this->emailCanonical = $emailCanonical;
@@ -377,9 +322,6 @@ abstract class User implements UserInterface, EquatableInterface, \Serializable
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setEnabled($boolean)
     {
         $this->enabled = (bool) $boolean;
@@ -387,9 +329,6 @@ abstract class User implements UserInterface, EquatableInterface, \Serializable
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setPassword($password)
     {
         $this->password = $password;
@@ -397,23 +336,17 @@ abstract class User implements UserInterface, EquatableInterface, \Serializable
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setSuperAdmin($boolean)
     {
         if (true === $boolean) {
-            $this->addRole('ROLE_SUPER_ADMIN');
+            $this->addRole(static::ROLE_SUPER_ADMIN);
         } else {
-            $this->removeRole('ROLE_SUPER_ADMIN');
+            $this->removeRole(static::ROLE_SUPER_ADMIN);
         }
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setPlainPassword($password)
     {
         $this->plainPassword = $password;
@@ -421,19 +354,13 @@ abstract class User implements UserInterface, EquatableInterface, \Serializable
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setLastLogin(\DateTime $time = null)
+    public function setLastLogin(?\DateTime $time = null)
     {
         $this->lastLogin = $time;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setConfirmationToken($confirmationToken)
     {
         $this->confirmationToken = $confirmationToken;
@@ -441,10 +368,7 @@ abstract class User implements UserInterface, EquatableInterface, \Serializable
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setPasswordRequestedAt(\DateTime $date = null)
+    public function setPasswordRequestedAt(?\DateTime $date = null)
     {
         $this->passwordRequestedAt = $date;
 
@@ -461,18 +385,12 @@ abstract class User implements UserInterface, EquatableInterface, \Serializable
         return $this->passwordRequestedAt;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function isPasswordRequestNonExpired($ttl)
     {
-        return $this->getPasswordRequestedAt() instanceof \DateTime &&
-               $this->getPasswordRequestedAt()->getTimestamp() + $ttl > time();
+        return $this->getPasswordRequestedAt() instanceof \DateTime
+               && $this->getPasswordRequestedAt()->getTimestamp() + $ttl > time();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setRoles(array $roles)
     {
         $this->roles = [];
@@ -484,9 +402,6 @@ abstract class User implements UserInterface, EquatableInterface, \Serializable
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function isEqualTo(BaseUserInterface $user): bool
     {
         if (!$user instanceof self) {

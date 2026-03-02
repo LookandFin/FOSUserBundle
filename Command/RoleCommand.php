@@ -13,6 +13,7 @@ namespace FOS\UserBundle\Command;
 
 use FOS\UserBundle\Util\UserManipulator;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -35,10 +36,7 @@ abstract class RoleCommand extends Command
         $this->userManipulator = $userManipulator;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setDefinition([
@@ -48,9 +46,6 @@ abstract class RoleCommand extends Command
             ]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $username = $input->getArgument('username');
@@ -78,12 +73,9 @@ abstract class RoleCommand extends Command
      * @param bool   $super
      * @param string $role
      */
-    abstract protected function executeRoleCommand(UserManipulator $manipulator, OutputInterface $output, $username, $super, $role);
+    abstract protected function executeRoleCommand(UserManipulator $manipulator, OutputInterface $output, $username, $super, $role): void;
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function interact(InputInterface $input, OutputInterface $output)
+    protected function interact(InputInterface $input, OutputInterface $output): void
     {
         $questions = [];
 
@@ -111,8 +103,11 @@ abstract class RoleCommand extends Command
             $questions['role'] = $question;
         }
 
+        $helper = $this->getHelper('question');
+        \assert($helper instanceof QuestionHelper);
+
         foreach ($questions as $name => $question) {
-            $answer = $this->getHelper('question')->ask($input, $output, $question);
+            $answer = $helper->ask($input, $output, $question);
             $input->setArgument($name, $answer);
         }
     }

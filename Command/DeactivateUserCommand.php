@@ -14,6 +14,7 @@ namespace FOS\UserBundle\Command;
 use FOS\UserBundle\Util\UserManipulator;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -23,15 +24,10 @@ use Symfony\Component\Console\Question\Question;
  * @author Antoine Hérault <antoine.herault@gmail.com>
  *
  * @internal
- *
- * @final
  */
 #[AsCommand(name: 'fos:user:deactivate', description: 'Deactivate a user')]
-class DeactivateUserCommand extends Command
+final class DeactivateUserCommand extends Command
 {
-    // BC with Symfony <5.3
-    protected static $defaultName = 'fos:user:deactivate';
-
     private $userManipulator;
 
     public function __construct(UserManipulator $userManipulator)
@@ -41,15 +37,9 @@ class DeactivateUserCommand extends Command
         $this->userManipulator = $userManipulator;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function configure()
+    protected function configure(): void
     {
         $this
-            // BC with Symfony <5.3
-            ->setName('fos:user:deactivate')
-            ->setDescription('Deactivate a user')
             ->setDefinition([
                 new InputArgument('username', InputArgument::REQUIRED, 'The username'),
             ])
@@ -61,9 +51,6 @@ EOT
             );
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $username = $input->getArgument('username');
@@ -75,10 +62,7 @@ EOT
         return 0;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function interact(InputInterface $input, OutputInterface $output)
+    protected function interact(InputInterface $input, OutputInterface $output): void
     {
         if (!$input->getArgument('username')) {
             $question = new Question('Please choose a username:');
@@ -89,7 +73,10 @@ EOT
 
                 return $username;
             });
-            $answer = $this->getHelper('question')->ask($input, $output, $question);
+
+            $helper = $this->getHelper('question');
+            \assert($helper instanceof QuestionHelper);
+            $answer = $helper->ask($input, $output, $question);
 
             $input->setArgument('username', $answer);
         }

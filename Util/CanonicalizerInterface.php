@@ -14,9 +14,9 @@ namespace FOS\UserBundle\Util;
 interface CanonicalizerInterface
 {
     /**
-     * @param string $string
+     * @param string|null $string
      *
-     * @return string
+     * @phpstan-return ($string is null ? null : string)
      */
-    public function canonicalize($string);
+    public function canonicalize($string): ?string;
 }

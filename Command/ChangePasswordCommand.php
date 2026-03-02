@@ -14,6 +14,7 @@ namespace FOS\UserBundle\Command;
 use FOS\UserBundle\Util\UserManipulator;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -21,15 +22,10 @@ use Symfony\Component\Console\Question\Question;
 
 /**
  * @internal
- *
- * @final
  */
 #[AsCommand(name: 'fos:user:change-password', description: 'Change the password of a user.')]
-class ChangePasswordCommand extends Command
+final class ChangePasswordCommand extends Command
 {
-    // BC with Symfony <5.3
-    protected static $defaultName = 'fos:user:change-password';
-
     private $userManipulator;
 
     public function __construct(UserManipulator $userManipulator)
@@ -39,15 +35,9 @@ class ChangePasswordCommand extends Command
         $this->userManipulator = $userManipulator;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function configure()
+    protected function configure(): void
     {
         $this
-            // BC with Symfony <5.3
-            ->setName('fos:user:change-password')
-            ->setDescription('Change the password of a user.')
             ->setDefinition([
                 new InputArgument('username', InputArgument::REQUIRED, 'The username'),
                 new InputArgument('password', InputArgument::REQUIRED, 'The password'),
@@ -67,9 +57,6 @@ EOT
             );
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $username = $input->getArgument('username');
@@ -82,10 +69,7 @@ EOT
         return 0;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function interact(InputInterface $input, OutputInterface $output)
+    protected function interact(InputInterface $input, OutputInterface $output): void
     {
         $questions = [];
 
@@ -114,8 +98,11 @@ EOT
             $questions['password'] = $question;
         }
 
+        $helper = $this->getHelper('question');
+        \assert($helper instanceof QuestionHelper);
+
         foreach ($questions as $name => $question) {
-            $answer = $this->getHelper('question')->ask($input, $output, $question);
+            $answer = $helper->ask($input, $output, $question);
             $input->setArgument($name, $answer);
         }
     }

@@ -21,14 +21,9 @@ use Symfony\Flex\Recipe;
  * @author Ryan Weaver <ryan@knpuniversity.com>
  *
  * @internal
- *
- * @final
  */
-class CheckForSessionPass implements CompilerPassInterface
+final class CheckForSessionPass implements CompilerPassInterface
 {
-    /**
-     * {@inheritdoc}
-     */
     public function process(ContainerBuilder $container): void
     {
         if ($container->hasParameter('fos_user.session_needed') && !$container->has('session.storage.factory') && !$container->has('session')) {

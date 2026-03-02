@@ -14,22 +14,6 @@ namespace FOS\UserBundle\Model;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface as BaseUserInterface;
 
-if (interface_exists(PasswordAuthenticatedUserInterface::class)) {
-    /**
-     * @internal Only for back compatibility. Remove / merge when dropping support for Symfony 4
-     */
-    interface CompatUserInterface extends PasswordAuthenticatedUserInterface, BaseUserInterface
-    {
-    }
-} else {
-    /**
-     * @internal Only for back compatibility. Remove / merge when dropping support for Symfony 4
-     */
-    interface CompatUserInterface extends BaseUserInterface
-    {
-    }
-}
-
 /**
  * Implementations of that interface must be serializable. The mechanism
  * being used to support serialization is up for the implementation.
@@ -40,11 +24,11 @@ if (interface_exists(PasswordAuthenticatedUserInterface::class)) {
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  * @author Julian Finkler <julian@developer-heaven.de>
  */
-interface UserInterface extends CompatUserInterface
+interface UserInterface extends PasswordAuthenticatedUserInterface, BaseUserInterface
 {
-    //public const ROLE_DEFAULT = 'ROLE_USER';
+    public const ROLE_DEFAULT = 'ROLE_USER';
 
-    //public const ROLE_SUPER_ADMIN = 'ROLE_SUPER_ADMIN';
+    public const ROLE_SUPER_ADMIN = 'ROLE_SUPER_ADMIN';
 
     /**
      * Returns the user unique id.
@@ -65,7 +49,7 @@ interface UserInterface extends CompatUserInterface
      *
      * @return static
      */
-    public function setUsername(?string $username);
+    public function setUsername($username);
 
     /**
      * Gets the canonical username in search and sort queries.
@@ -81,7 +65,7 @@ interface UserInterface extends CompatUserInterface
      *
      * @return static
      */
-    public function setUsernameCanonical(?string $usernameCanonical);
+    public function setUsernameCanonical($usernameCanonical);
 
     /**
      * @param string|null $salt
@@ -104,7 +88,7 @@ interface UserInterface extends CompatUserInterface
      *
      * @return static
      */
-    public function setEmail(?string $email);
+    public function setEmail($email);
 
     /**
      * Gets the canonical email in search and sort queries.
@@ -120,7 +104,7 @@ interface UserInterface extends CompatUserInterface
      *
      * @return static
      */
-    public function setEmailCanonical(?string $emailCanonical);
+    public function setEmailCanonical($emailCanonical);
 
     /**
      * Gets the plain password.
@@ -136,7 +120,7 @@ interface UserInterface extends CompatUserInterface
      *
      * @return static
      */
-    public function setPlainPassword(?string $password);
+    public function setPlainPassword($password);
 
     /**
      * Sets the hashed password.
@@ -145,7 +129,7 @@ interface UserInterface extends CompatUserInterface
      *
      * @return static
      */
-    public function setPassword(?string $password);
+    public function setPassword($password);
 
     /**
      * Tells if the the given user has the super admin role.
@@ -159,7 +143,7 @@ interface UserInterface extends CompatUserInterface
      *
      * @return static
      */
-    public function setEnabled(bool $boolean);
+    public function setEnabled($boolean);
 
     /**
      * Sets the super admin status.
@@ -168,7 +152,7 @@ interface UserInterface extends CompatUserInterface
      *
      * @return static
      */
-    public function setSuperAdmin(bool $boolean);
+    public function setSuperAdmin($boolean);
 
     /**
      * Gets the confirmation token.
@@ -184,14 +168,14 @@ interface UserInterface extends CompatUserInterface
      *
      * @return static
      */
-    public function setConfirmationToken(?string $confirmationToken);
+    public function setConfirmationToken($confirmationToken);
 
     /**
      * Sets the timestamp that the user requested a password reset.
      *
      * @return static
      */
-    public function setPasswordRequestedAt(\DateTime $date = null);
+    public function setPasswordRequestedAt(?\DateTime $date = null);
 
     /**
      * Checks whether the password reset request has expired.
@@ -200,14 +184,14 @@ interface UserInterface extends CompatUserInterface
      *
      * @return bool
      */
-    public function isPasswordRequestNonExpired(int $ttl);
+    public function isPasswordRequestNonExpired($ttl);
 
     /**
      * Sets the last login time.
      *
      * @return static
      */
-    public function setLastLogin(\DateTime $time = null);
+    public function setLastLogin(?\DateTime $time = null);
 
     /**
      * Never use this to check if this user has access to anything!
@@ -221,12 +205,14 @@ interface UserInterface extends CompatUserInterface
      *
      * @return bool
      */
-    public function hasRole(string $role);
+    public function hasRole($role);
 
     /**
      * Sets the roles of the user.
      *
      * This overwrites any previous roles.
+     *
+     * @param string[] $roles
      *
      * @return static
      */
@@ -239,7 +225,7 @@ interface UserInterface extends CompatUserInterface
      *
      * @return static
      */
-    public function addRole(string $role): void;
+    public function addRole($role);
 
     /**
      * Removes a role to the user.
@@ -248,7 +234,7 @@ interface UserInterface extends CompatUserInterface
      *
      * @return static
      */
-    public function removeRole(string $role);
+    public function removeRole($role);
 
     /**
      * Checks whether the user is enabled.

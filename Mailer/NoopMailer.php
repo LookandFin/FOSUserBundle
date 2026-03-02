@@ -16,20 +16,18 @@ use FOS\UserBundle\Model\UserInterface;
 /**
  * This mailer does nothing.
  * It is used when the 'email' configuration is not set,
- * and allows to use this bundle without swiftmailer.
+ * and allows to use this bundle without a mailer component.
  *
  * @author Thibault Duplessis <thibault.duplessis@gmail.com>
- *
- * @final
  */
-class NoopMailer implements MailerInterface
+final class NoopMailer implements MailerInterface
 {
-    public function sendConfirmationEmailMessage(UserInterface $user)
+    public function sendConfirmationEmailMessage(UserInterface $user): void
     {
         // nothing happens.
     }
 
-    public function sendResettingEmailMessage(UserInterface $user)
+    public function sendResettingEmailMessage(UserInterface $user): void
     {
         // nothing happens.
     }

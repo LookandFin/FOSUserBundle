@@ -21,14 +21,14 @@ use Symfony\Component\Form\Exception\UnexpectedTypeException;
  *
  * @author Thibault Duplessis <thibault.duplessis@gmail.com>
  *
- * @final
+ * @template-implements DataTransformerInterface<UserInterface, string>
  */
-class UserToUsernameTransformer implements DataTransformerInterface
+final class UserToUsernameTransformer implements DataTransformerInterface
 {
     /**
      * @var UserManagerInterface
      */
-    protected $userManager;
+    private $userManager;
 
     /**
      * UserToUsernameTransformer constructor.

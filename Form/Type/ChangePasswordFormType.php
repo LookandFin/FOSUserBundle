@@ -19,10 +19,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Security\Core\Validator\Constraints\UserPassword;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
-/**
- * @final
- */
-class ChangePasswordFormType extends AbstractType
+final class ChangePasswordFormType extends AbstractType
 {
     /**
      * @var string
@@ -37,17 +34,12 @@ class ChangePasswordFormType extends AbstractType
         $this->class = $class;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $constraintsOptions = [
-            'message' => 'fos_user.current_password.invalid',
-        ];
+        $groups = null;
 
         if (!empty($options['validation_groups'])) {
-            $constraintsOptions['groups'] = [reset($options['validation_groups'])];
+            $groups = [reset($options['validation_groups'])];
         }
 
         $builder->add('current_password', PasswordType::class, [
@@ -56,7 +48,7 @@ class ChangePasswordFormType extends AbstractType
             'mapped' => false,
             'constraints' => [
                 new NotBlank(),
-                new UserPassword($constraintsOptions),
+                new UserPassword(message: 'fos_user.current_password.invalid', groups: $groups),
             ],
             'attr' => [
                 'autocomplete' => 'current-password',
@@ -77,10 +69,7 @@ class ChangePasswordFormType extends AbstractType
         ]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => $this->class,
@@ -88,9 +77,6 @@ class ChangePasswordFormType extends AbstractType
         ]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getBlockPrefix(): string
     {
         return 'fos_user_change_password';
