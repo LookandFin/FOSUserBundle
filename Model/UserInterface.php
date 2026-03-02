@@ -26,9 +26,9 @@ use Symfony\Component\Security\Core\User\UserInterface as BaseUserInterface;
  */
 interface UserInterface extends PasswordAuthenticatedUserInterface, BaseUserInterface
 {
-    public const ROLE_DEFAULT = 'ROLE_USER';
+    //public const ROLE_DEFAULT = 'ROLE_USER';
 
-    public const ROLE_SUPER_ADMIN = 'ROLE_SUPER_ADMIN';
+    //public const ROLE_SUPER_ADMIN = 'ROLE_SUPER_ADMIN';
 
     /**
      * Returns the user unique id.
@@ -49,7 +49,7 @@ interface UserInterface extends PasswordAuthenticatedUserInterface, BaseUserInte
      *
      * @return static
      */
-    public function setUsername($username);
+    public function setUsername(?string $username): void;
 
     /**
      * Gets the canonical username in search and sort queries.
@@ -65,7 +65,7 @@ interface UserInterface extends PasswordAuthenticatedUserInterface, BaseUserInte
      *
      * @return static
      */
-    public function setUsernameCanonical($usernameCanonical);
+    public function setUsernameCanonical(?string $usernameCanonical): void;
 
     /**
      * @param string|null $salt
@@ -88,7 +88,7 @@ interface UserInterface extends PasswordAuthenticatedUserInterface, BaseUserInte
      *
      * @return static
      */
-    public function setEmail($email);
+    public function setEmail(?string $email): void;
 
     /**
      * Gets the canonical email in search and sort queries.
@@ -104,7 +104,7 @@ interface UserInterface extends PasswordAuthenticatedUserInterface, BaseUserInte
      *
      * @return static
      */
-    public function setEmailCanonical($emailCanonical);
+    public function setEmailCanonical(?string $emailCanonical): void;
 
     /**
      * Gets the plain password.
@@ -120,7 +120,7 @@ interface UserInterface extends PasswordAuthenticatedUserInterface, BaseUserInte
      *
      * @return static
      */
-    public function setPlainPassword($password);
+    public function setPlainPassword(?string $password): void;
 
     /**
      * Sets the hashed password.
@@ -129,7 +129,7 @@ interface UserInterface extends PasswordAuthenticatedUserInterface, BaseUserInte
      *
      * @return static
      */
-    public function setPassword($password);
+    public function setPassword(?string $password): void;
 
     /**
      * Tells if the the given user has the super admin role.
@@ -143,7 +143,7 @@ interface UserInterface extends PasswordAuthenticatedUserInterface, BaseUserInte
      *
      * @return static
      */
-    public function setEnabled($boolean);
+    public function setEnabled(bool $enabled): void;
 
     /**
      * Sets the super admin status.
@@ -152,7 +152,7 @@ interface UserInterface extends PasswordAuthenticatedUserInterface, BaseUserInte
      *
      * @return static
      */
-    public function setSuperAdmin($boolean);
+    public function setSuperAdmin(bool $boolean): void;
 
     /**
      * Gets the confirmation token.
@@ -168,7 +168,7 @@ interface UserInterface extends PasswordAuthenticatedUserInterface, BaseUserInte
      *
      * @return static
      */
-    public function setConfirmationToken($confirmationToken);
+    public function setConfirmationToken(?string $confirmationToken): void;
 
     /**
      * Sets the timestamp that the user requested a password reset.
@@ -184,7 +184,7 @@ interface UserInterface extends PasswordAuthenticatedUserInterface, BaseUserInte
      *
      * @return bool
      */
-    public function isPasswordRequestNonExpired($ttl);
+    public function isPasswordRequestNonExpired(int $ttl): bool;
 
     /**
      * Sets the last login time.
@@ -205,7 +205,7 @@ interface UserInterface extends PasswordAuthenticatedUserInterface, BaseUserInte
      *
      * @return bool
      */
-    public function hasRole($role);
+    public function hasRole(string $role): bool;
 
     /**
      * Sets the roles of the user.
@@ -225,7 +225,7 @@ interface UserInterface extends PasswordAuthenticatedUserInterface, BaseUserInte
      *
      * @return static
      */
-    public function addRole($role);
+    public function addRole(string $role): void;
 
     /**
      * Removes a role to the user.
@@ -234,7 +234,7 @@ interface UserInterface extends PasswordAuthenticatedUserInterface, BaseUserInte
      *
      * @return static
      */
-    public function removeRole($role);
+    public function removeRole(string $role): void;
 
     /**
      * Checks whether the user is enabled.
