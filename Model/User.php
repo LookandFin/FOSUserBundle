@@ -169,18 +169,13 @@ abstract class User implements UserInterface, EquatableInterface, \Serializable
         $this->__unserialize(unserialize($serialized));
     }
 
-    public function addRole($role)
+    public function addRole($role): void
     {
         $role = strtoupper($role);
-        if ($role === static::ROLE_DEFAULT) {
-            return $this;
-        }
 
         if (!in_array($role, $this->roles, true)) {
             $this->roles[] = $role;
         }
-
-        return $this;
     }
 
     #[\Deprecated]
@@ -262,7 +257,7 @@ abstract class User implements UserInterface, EquatableInterface, \Serializable
         return array_values(array_unique($roles));
     }
 
-    public function hasRole($role)
+    public function hasRole($role): bool
     {
         return in_array(strtoupper($role), $this->getRoles(), true);
     }
@@ -277,28 +272,22 @@ abstract class User implements UserInterface, EquatableInterface, \Serializable
         return $this->hasRole(static::ROLE_SUPER_ADMIN);
     }
 
-    public function removeRole($role)
+    public function removeRole($role): void
     {
         if (false !== $key = array_search(strtoupper($role), $this->roles, true)) {
             unset($this->roles[$key]);
             $this->roles = array_values($this->roles);
         }
-
-        return $this;
     }
 
-    public function setUsername($username)
+    public function setUsername($username): void
     {
         $this->username = $username;
-
-        return $this;
     }
 
-    public function setUsernameCanonical($usernameCanonical)
+    public function setUsernameCanonical($usernameCanonical): void
     {
         $this->usernameCanonical = $usernameCanonical;
-
-        return $this;
     }
 
     public function setSalt($salt)
@@ -308,50 +297,38 @@ abstract class User implements UserInterface, EquatableInterface, \Serializable
         return $this;
     }
 
-    public function setEmail($email)
+    public function setEmail($email): void
     {
         $this->email = $email;
-
-        return $this;
     }
 
-    public function setEmailCanonical($emailCanonical)
+    public function setEmailCanonical($emailCanonical): void
     {
         $this->emailCanonical = $emailCanonical;
-
-        return $this;
     }
 
-    public function setEnabled($boolean)
+    public function setEnabled($boolean): void
     {
         $this->enabled = (bool) $boolean;
-
-        return $this;
     }
 
-    public function setPassword($password)
+    public function setPassword($password): void
     {
         $this->password = $password;
-
-        return $this;
     }
 
-    public function setSuperAdmin($boolean)
+    public function setSuperAdmin($boolean): void
     {
         if (true === $boolean) {
             $this->addRole(static::ROLE_SUPER_ADMIN);
         } else {
             $this->removeRole(static::ROLE_SUPER_ADMIN);
         }
-
-        return $this;
     }
 
-    public function setPlainPassword($password)
+    public function setPlainPassword($password): void
     {
         $this->plainPassword = $password;
-
-        return $this;
     }
 
     public function setLastLogin(?\DateTime $time = null)
@@ -361,11 +338,9 @@ abstract class User implements UserInterface, EquatableInterface, \Serializable
         return $this;
     }
 
-    public function setConfirmationToken($confirmationToken)
+    public function setConfirmationToken($confirmationToken): void
     {
         $this->confirmationToken = $confirmationToken;
-
-        return $this;
     }
 
     public function setPasswordRequestedAt(?\DateTime $date = null)
@@ -385,7 +360,7 @@ abstract class User implements UserInterface, EquatableInterface, \Serializable
         return $this->passwordRequestedAt;
     }
 
-    public function isPasswordRequestNonExpired($ttl)
+    public function isPasswordRequestNonExpired($ttl): bool
     {
         return $this->getPasswordRequestedAt() instanceof \DateTime
                && $this->getPasswordRequestedAt()->getTimestamp() + $ttl > time();
